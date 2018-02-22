@@ -141,3 +141,13 @@ ecr-retag =
     aws ecr put-image --repository-name ${1} --image-tag ${3} --image-manifest "$manifest"
   }; f
 
+delete-ami = 
+  !f() {
+    snapshots=($(aws ec2 describe-images --image-ids $1 --query "Images[].BlockDeviceMappings[].Ebs.SnapshotId" --output text))
+    aws ec2 deregister-image --image-id $1
+    for id in $snapshots
+    do
+      aws ec2 delete-snapshot --snapshot-id ${id}
+    done
+  }; f
+
