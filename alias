@@ -2,6 +2,11 @@
 
 whoami = sts get-caller-identity
 
+ssh =
+  !f() {
+    aws ssm start-session --target "${1}"
+  }; f
+
 create-assume-role =
   !f() {
     aws iam create-role --role-name "${1}" \
